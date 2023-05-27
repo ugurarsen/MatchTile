@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,12 +29,17 @@ public class TouchManager : MonoBehaviour
     
     private void TouchPressed(InputAction.CallbackContext context)
     {
-        Vector2 touchPosition = _touchPositionAction.ReadValue<Vector2>();
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(_touchPositionAction.ReadValue<Vector2>());
+        Vector2 touchPosition = new Vector2(worldPoint.x, worldPoint.y);
         Collider2D hit = Physics2D.OverlapPoint(touchPosition);
-        
+        //Debug.Log("Touch position: " + touchPosition);
         if (hit != null)
         {
-            Debug.Log("Collider detected: " + hit.GetComponent<Collider>().name);
+            Tile tile = hit.GetComponent<Tile>();
+            if (tile != null)
+            {
+                MatchingArea.I.JoinEmptySlot(tile);
+            }
         }
     }
 }

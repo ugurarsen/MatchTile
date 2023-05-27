@@ -1,36 +1,76 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using UA.Toolkit;
 
 public class MatchingArea : Singleton<MatchingArea>
 {
     public Slot[] slots;
-    
-    public List<Tile> tiles = new List<Tile>();
 
-    public Slot GetEmptySlot()
+    public void JoinEmptySlot(Tile selectedTile)
     {
+        // Eşleşen taş varsa
+        for (int i = slots.Length - 1; i >= 0; i--)
+        {
+            if (slots[i].tile != null && slots[i].tile.SpriteID == selectedTile.SpriteID)
+            {
+                for (int j = slots.Length - 1; j > i; j--)
+                {
+                    if (slots[j].tile != null)
+                    {
+                        slots[j + 1].tile = slots[j].tile;
+                        slots[j].tile = null;
+                        slots[j + 1].tile.UpdateLocation();
+                    }
+                }
+                slots[i + 1].tile = selectedTile;
+                selectedTile.slotID = i + 1;
+                selectedTile.OnTouch();
+                return;
+            }
+        }
+        
+        // Eşleşen taş yoksa
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i].tile == null)
             {
-                return slots[i];
+                slots[i].tile = selectedTile;
+                selectedTile.slotID = i;
+                selectedTile.OnTouch();
+                return;
             }
-        }
-        Debug.Log("Matching area is full.");
-        return null;
-    }
-    
-    public void AddTile(Tile tile)
-    {
-        if (tiles.Contains(tile))
-        {
-            tiles.Add(tile);
         }
     }
 
-    public void CheckMatches()
+    public void CheckMatch(int spriteID)
     {
-        
+        int matchCount = 0;
+        List<Slot> matchedSlots = new List<Slot>();
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].tile == null) continue;
+            if (slots[i].tile.SpriteID == spriteID)
+            {
+                matchCount++;
+                matchedSlots.Add(slots[i]);
+            }
+        }
+
+        if (matchCount >= 3)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Tile tempTile = matchedSlots[i].tile;
+                matchedSlots[i].tile = null;
+                tempTile.transform.DOScaleY(0, 0.2f).OnComplete(() =>
+                {
+                    Destroy(tempTile.gameObject);
+                });
+            }
+        }
     }
+    
 }

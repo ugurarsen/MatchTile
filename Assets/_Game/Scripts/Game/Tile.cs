@@ -12,9 +12,10 @@ public class Tile : MonoBehaviour
     public SpriteRenderer tileImage;
     public Sprite[] sprites;
     public int zIndex;
-    public int spriteID
+    public int slotID;
+    public int SpriteID
     {
-        get => spriteID;
+        get => _spriteID;
         set
         {
             if (_spriteID != value)
@@ -23,7 +24,6 @@ public class Tile : MonoBehaviour
                 ChangeSprite(value);
             }
         }
-        
     }
     private int _spriteID;
     public void ChangeSprite(int id)
@@ -32,19 +32,31 @@ public class Tile : MonoBehaviour
         tileImage.sortingOrder = zIndex;
         bgImage.sortingOrder = zIndex-1;
     }
-
-    public void GoToTarget(Transform target)
+    
+    private void Awake()
     {
-        transform.DOKill();
-        transform.DOMove(target.position, Configs.Tile.duration);
+        SpriteID = currentSpriteID;
+    }
+    
+
+    public void OnTouch()
+    {
+        transform.DOMove(MatchingArea.I.slots[slotID].transform.position, Configs.Tile.duration).OnComplete((() =>
+        {
+            MatchingArea.I.CheckMatch(SpriteID);
+        }));
+    }
+
+    public void UpdateLocation()
+    {
+        transform.DOMove(MatchingArea.I.slots[slotID].transform.position, .2f);
     }
     
 #if UNITY_EDITOR
     [ButtonMethod]
     private void UpdateImage()
     {
-        spriteID = currentSpriteID;
-
+        SpriteID = currentSpriteID;
     }
 #endif
 }
