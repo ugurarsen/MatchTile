@@ -43,12 +43,14 @@ public class Tile : MonoBehaviour
                     bgImage.DOColor(Color.white, .2f);
                     tileImage.DOColor(Color.white, .2f);
                     gameObject.layer = LayerMask.NameToLayer("OpenTile");
+                    
                 }
                 else
                 {
                     bgImage.DOColor(Color.grey, .2f);
                     tileImage.DOColor(Color.grey, .2f);
                     gameObject.layer = LayerMask.NameToLayer("CloseTile");
+                   
                 }
             }
         }

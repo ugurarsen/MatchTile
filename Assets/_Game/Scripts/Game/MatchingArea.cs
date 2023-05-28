@@ -11,7 +11,9 @@ public class MatchingArea : Singleton<MatchingArea>
     public event Action TilesOverlapEvent;
     public void JoinEmptySlot(Tile selectedTile)
     {
+        selectedTile.boxCollider2D.enabled = false;
         TilesOverlapEvent -= selectedTile.CheckOverlap;
+        TilesOverlapEvent?.Invoke();
         // Eşleşen taş varsa
         for (int i = slots.Length - 1; i >= 0; i--)
         {
@@ -48,7 +50,7 @@ public class MatchingArea : Singleton<MatchingArea>
 
     public void CheckMatch(int spriteID)
     {
-        TilesOverlapEvent?.Invoke();
+        //TilesOverlapEvent?.Invoke();
         // Eşleşme kontrolü
         int matchCount = 0;
         List<Slot> matchedSlots = new List<Slot>();
