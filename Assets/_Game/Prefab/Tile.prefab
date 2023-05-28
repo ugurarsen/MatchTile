@@ -180,9 +180,9 @@ GameObject:
   - component: {fileID: 3595368576557169343}
   - component: {fileID: 5930931072861619663}
   - component: {fileID: 7311885525987518620}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tile
-  m_TagString: Untagged
+  m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,6 +228,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c4c13790efbc94c21ab0db2e92ec6580, type: 3}
   - {fileID: 21300000, guid: 37ad32f29a9e34423840f97bd21b631c, type: 3}
   zIndex: 0
+  slotID: 0
+  boxCollider2D: {fileID: 5930931072861619663}
 --- !u!61 &5930931072861619663
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -241,7 +243,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.000000014901161, y: 0.0022648275}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}

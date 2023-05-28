@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Slot : MonoBehaviour
 {
+    public ParticleSystem particle;
     public int slotID;
     public Tile _tile;
     public Tile tile

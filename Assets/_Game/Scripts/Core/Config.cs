@@ -2,7 +2,7 @@ public static class Configs
 {
     public static class Tile
     {
-        public static float duration = .5f;
+        public static float duration = .35f;
     }
     public static class UI
     {

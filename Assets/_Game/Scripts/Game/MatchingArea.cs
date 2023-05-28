@@ -8,9 +8,10 @@ using UA.Toolkit;
 public class MatchingArea : Singleton<MatchingArea>
 {
     public Slot[] slots;
-
+    public event Action TilesOverlapEvent;
     public void JoinEmptySlot(Tile selectedTile)
     {
+        TilesOverlapEvent -= selectedTile.CheckOverlap;
         // Eşleşen taş varsa
         for (int i = slots.Length - 1; i >= 0; i--)
         {
@@ -47,6 +48,8 @@ public class MatchingArea : Singleton<MatchingArea>
 
     public void CheckMatch(int spriteID)
     {
+        TilesOverlapEvent?.Invoke();
+        // Eşleşme kontrolü
         int matchCount = 0;
         List<Slot> matchedSlots = new List<Slot>();
         for (int i = 0; i < slots.Length; i++)
@@ -59,6 +62,7 @@ public class MatchingArea : Singleton<MatchingArea>
             }
         }
 
+        // 3'lü eşleşme varsa
         if (matchCount >= 3)
         {
             for (int i = 0; i < 3; i++)
@@ -67,10 +71,44 @@ public class MatchingArea : Singleton<MatchingArea>
                 matchedSlots[i].tile = null;
                 tempTile.transform.DOScaleY(0, 0.2f).OnComplete(() =>
                 {
-                    Destroy(tempTile.gameObject);
+                    slots[tempTile.slotID].particle.Play();
+                    DestroyImmediate(tempTile.gameObject);
                 });
+                
+
+            }
+            new DelayedAction(() =>
+            {
+                MoveToSlots();
+            },.4f).Execute(this);
+        }
+        
+    }
+
+    public void MoveToSlots()
+    {
+        List<Tile> allTiles = new List<Tile>();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].tile != null)
+            {
+                allTiles.Add(slots[i].tile);
             }
         }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (i < allTiles.Count)
+            {
+                slots[i].tile = allTiles[i];
+                allTiles[i].UpdateLocation();
+            }
+            else
+            {
+                slots[i].tile = null;
+            }
+            
+        }
     }
-    
 }

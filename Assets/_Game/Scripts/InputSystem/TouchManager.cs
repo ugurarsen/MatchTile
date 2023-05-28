@@ -36,7 +36,7 @@ public class TouchManager : MonoBehaviour
         if (hit != null)
         {
             Tile tile = hit.GetComponent<Tile>();
-            if (tile != null)
+            if (tile != null && tile.gameObject.layer == LayerMask.NameToLayer("OpenTile"))
             {
                 MatchingArea.I.JoinEmptySlot(tile);
             }
