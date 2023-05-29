@@ -2,19 +2,14 @@ using System;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using UA.Toolkit;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
-    public enum StartButton
-    {
-        TapToStartText,
-        StartButton,
-    }
+    
     
     public float fadeInOutTime = .2f;
-    [Header("Start Button Methods")]
-    [SerializeField] private StartButton startButtonMethod;
     [Header("Panels")]
     [SerializeField] Panels pnl;
     [Header("Images")]
@@ -24,6 +19,7 @@ public class UIManager : Singleton<UIManager>
     [Header("Texts")]
     [SerializeField] Texts txt;
 
+    public Slider complateSlider;
     private CanvasGroup activePanel = null;
 
     public Panels GetPanel() => pnl;
@@ -35,11 +31,6 @@ public class UIManager : Singleton<UIManager>
         StartGame();
     }
     
-    public void Initialize()
-    {
-        
-    }
-
     public void StartGame()
     {
         GameManager.OnStartGame();
@@ -54,25 +45,33 @@ public class UIManager : Singleton<UIManager>
     {
         FadeInAndOutPanels(pnl.fail);
     }
-
-    public void OnSuccess(bool hasPrize = true)
-    {
-        if(hasPrize)
-        {
-            btn.nextLevel.gameObject.SetActive(false);
-        }
-        else
-        {
-            btn.nextLevel.gameObject.SetActive(true);
-            FadeInAndOutPanels(pnl.success);
-        }
-        
-    }
     
-
-    public void ReloadScene(bool isSuccess)
+    public void LevelCompleteAnimation()
     {
-        GameManager.ReloadScene(isSuccess);
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(complateSlider.DOValue(1f, 0.3f))
+            .Append(img.star.DOColor(Color.yellow, 0.2f))
+            .Append(img.star.transform.DOMove(img.mainStar.transform.position, 0.2f))
+            .Append(img.star.transform.DOPunchScale(Vector3.zero, 0.1f).SetEase(Ease.InOutBounce))
+            .OnStart(() =>
+            {
+                img.mainStar.transform.DOPunchScale(Vector3.one, 0.1f).SetEase(Ease.InOutBounce);
+                SaveLoadManager.AddStar(1);
+                UpdateStarText();
+            });
+
+        sequence.Play();
+
+        new DelayedAction((() =>
+        {
+            GameManager.OnLevelCompleted();
+        }), 1f).Execute(this);
+    }
+
+    public void OnSuccess()
+    {
+        FadeInAndOutPanels(pnl.success);
+        btn.nextLevel.gameObject.SetActive(true);
     }
 
     void FadeInAndOutPanels(CanvasGroup _in)
@@ -102,49 +101,41 @@ public class UIManager : Singleton<UIManager>
                 _in.blocksRaycasts = true;
             });
         }
-       
-       
     }
     
 
     public void UpdateTexts()
     {
         txt.level.text = SaveLoadManager.GetLevel().ToString();
-        //UpdateCoinText();
+        UpdateStarText();
     }
 
-    public void UpdateCoinText()
+    public void UpdateStarText()
     {
-        txt.coin.text = SaveLoadManager.GetCoin().ToString();
+        txt.starText.text = SaveLoadManager.GetStar().ToString();
     }
-
-    
-    
 
     [System.Serializable]
     public class Panels
     {
-        public CanvasGroup mainMenu, gameIn, success, fail;
+        public CanvasGroup gameIn, success, fail;
     }
-    
 
     [System.Serializable]
     public class Images
     {
-        public Image taptoStart;
-        public Image[] joystickHighlights, vibrations;
+        public Image star, mainStar;
     }
 
-    
     [System.Serializable]
     public class Buttons
     {
-        public Button play, nextLevel, reTry ,getPrize;
+        public Button nextLevel, reTry;
     }
 
     [System.Serializable]
     public class Texts
     {
-        public TextMeshProUGUI level,coin;
+        public TextMeshProUGUI level, starText;
     }
 }

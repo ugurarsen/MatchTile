@@ -25,8 +25,6 @@ public class LevelHandler : Singleton<LevelHandler>
         int levelID = allLevels.Length >= 1 ? (SaveLoadManager.GetLevel()-1) % allLevels.Length : 0;
 
         crntLevel = Instantiate(testLevel != null ? testLevel : allLevels[levelID], pool);
-
-        GameManager.canStart = true;
     }
 
 }

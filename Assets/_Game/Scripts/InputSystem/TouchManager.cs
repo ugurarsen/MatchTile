@@ -29,21 +29,18 @@ public class TouchManager : MonoBehaviour
     
     private void TouchPressed(InputAction.CallbackContext context)
     {
+        if (!GameManager.isRunning) return;
         Vector3 worldPoint = Camera.main.ScreenToWorldPoint(_touchPositionAction.ReadValue<Vector2>());
         Vector2 touchPosition = new Vector2(worldPoint.x, worldPoint.y);
-    
-        int layerMask = LayerMask.GetMask("OpenTile"); // İlgilenilen layer'ın adını "OpenTile" olarak varsayıyoruz
-    
-        Collider2D hit = Physics2D.OverlapPoint(touchPosition, layerMask);
-    
+        Collider2D hit = Physics2D.OverlapPoint(touchPosition);
+        //Debug.Log("Touch position: " + touchPosition);
         if (hit != null)
         {
             Tile tile = hit.GetComponent<Tile>();
-            if (tile != null)
+            if (tile != null && tile.gameObject.layer == LayerMask.NameToLayer("OpenTile"))
             {
                 MatchingArea.I.JoinEmptySlot(tile);
             }
         }
     }
-
 }

@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour
         }
     }
     private int _spriteID;
-    
+    private Level level;
     public bool TileStatus
     {
         get => _tileStatus;
@@ -69,13 +69,14 @@ public class Tile : MonoBehaviour
         CheckOverlap();
         MatchingArea.I.TilesOverlapEvent += CheckOverlap;
     }
-    
 
     public void OnTouch()
     {
+        LevelHandler.I.GetLevel().RemoveTile(this);
         boxCollider2D.enabled = false;
         transform.DOMove(MatchingArea.I.slots[slotID].transform.position, Configs.Tile.duration).OnComplete((() =>
         {
+            Debug.Log("SpriteID: " + SpriteID);
             MatchingArea.I.CheckMatch(SpriteID);
         }));
     }

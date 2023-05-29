@@ -50,17 +50,18 @@ public class MatchingArea : Singleton<MatchingArea>
 
     public void CheckMatch(int spriteID)
     {
-        //TilesOverlapEvent?.Invoke();
         // Eşleşme kontrolü
         int matchCount = 0;
         List<Slot> matchedSlots = new List<Slot>();
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slots[i].tile == null) continue;
-            if (slots[i].tile.SpriteID == spriteID)
+            if (slots[i].tile != null)
             {
-                matchCount++;
-                matchedSlots.Add(slots[i]);
+                if (slots[i].tile.SpriteID == spriteID)
+                {
+                    matchCount++;
+                    matchedSlots.Add(slots[i]);
+                }
             }
         }
 
@@ -69,23 +70,33 @@ public class MatchingArea : Singleton<MatchingArea>
         {
             for (int i = 0; i < 3; i++)
             {
+                Debug.Log("Matched");
                 Tile tempTile = matchedSlots[i].tile;
                 matchedSlots[i].tile = null;
                 tempTile.transform.DOScaleY(0, 0.2f).OnComplete(() =>
                 {
                     slots[tempTile.slotID].particle.Play();
-                    DestroyImmediate(tempTile.gameObject);
+                    Destroy(tempTile.gameObject);
                 });
-                
-
             }
             new DelayedAction(() =>
             {
                 MoveToSlots();
             },.4f).Execute(this);
         }
+
+        new DelayedAction((() =>
+        {
+            if (slots[slots.Length-1].tile != null)
+            {
+                Debug.Log("Level Failed");
+                GameManager.OnLevelFailed();
+            }
+        }),1f).Execute(this);
         
     }
+    
+    
 
     public void MoveToSlots()
     {
@@ -96,6 +107,7 @@ public class MatchingArea : Singleton<MatchingArea>
             if (slots[i].tile != null)
             {
                 allTiles.Add(slots[i].tile);
+                slots[i].tile = null;
             }
         }
 
@@ -110,7 +122,6 @@ public class MatchingArea : Singleton<MatchingArea>
             {
                 slots[i].tile = null;
             }
-            
         }
     }
 }

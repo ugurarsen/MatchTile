@@ -11,12 +11,12 @@ public class SaveLoadManager : MonoBehaviour
 
     #endregion
 
-    #region COIN
+    #region STAR
 
-    const string KEY_COIN = "coins";
+    const string KEY_STAR = "stars";
 
-    public static void AddCoin(int add) => PlayerPrefs.SetInt(KEY_COIN, GetCoin() + add);
-    public static int GetCoin() => PlayerPrefs.GetInt(KEY_COIN, 0);
+    public static void AddStar(int add) => PlayerPrefs.SetInt(KEY_STAR, GetStar() + add);
+    public static int GetStar() => PlayerPrefs.GetInt(KEY_STAR, 0);
 
     #endregion
 

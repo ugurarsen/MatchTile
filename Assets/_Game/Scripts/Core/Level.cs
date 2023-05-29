@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public List<Tile> tiles = new List<Tile>();
+    
+    public void AddTile(Tile tile)
     {
-        
+        if (!tiles.Contains(tile))
+        {
+            tiles.Add(tile);
+        }
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void RemoveTile(Tile tile)
     {
-        
+        if (tiles.Contains(tile))
+        {
+            tiles.Remove(tile);
+        }
+
+        if (tiles.Count == 0)
+        {
+            Debug.Log("Level complete!");
+            UIManager.I.LevelCompleteAnimation();
+        }
     }
 }
