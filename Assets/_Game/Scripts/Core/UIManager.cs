@@ -51,14 +51,14 @@ public class UIManager : Singleton<UIManager>
         Sequence sequence = DOTween.Sequence();
         sequence.Append(complateSlider.DOValue(1f, 0.3f))
             .Append(img.star.DOColor(Color.yellow, 0.2f))
-            .Append(img.star.transform.DOMove(img.mainStar.transform.position, 0.2f))
+            .Append(img.star.transform.DOMove(img.mainStar.transform.position, 0.4f))
             .Append(img.star.transform.DOPunchScale(Vector3.zero, 0.1f).SetEase(Ease.InOutBounce))
             .OnStart(() =>
             {
-                img.mainStar.transform.DOPunchScale(Vector3.one, 0.1f).SetEase(Ease.InOutBounce);
                 SaveLoadManager.AddStar(1);
                 UpdateStarText();
-            });
+            })
+            .Append(img.mainStar.transform.DOPunchScale(Vector3.one, 0.1f).SetEase(Ease.InOutBounce));
 
         sequence.Play();
 

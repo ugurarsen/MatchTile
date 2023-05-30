@@ -21,11 +21,8 @@ public class Tile : MonoBehaviour
         get => _spriteID;
         set
         {
-            if (_spriteID != value)
-            {
-                _spriteID = value;
-                ChangeSprite(value);
-            }
+            _spriteID = value;
+            ChangeSprite(value);
         }
     }
     private int _spriteID;
@@ -40,15 +37,15 @@ public class Tile : MonoBehaviour
                 _tileStatus = value;
                 if (value)
                 {
-                    bgImage.DOColor(Color.white, .2f);
-                    tileImage.DOColor(Color.white, .2f);
+                    bgImage.DOColor(Color.white, .0f);
+                    tileImage.DOColor(Color.white, .0f);
                     gameObject.layer = LayerMask.NameToLayer("OpenTile");
                     
                 }
                 else
                 {
-                    bgImage.DOColor(Color.grey, .2f);
-                    tileImage.DOColor(Color.grey, .2f);
+                    bgImage.DOColor(Color.grey, .0f);
+                    tileImage.DOColor(Color.grey, .0f);
                     gameObject.layer = LayerMask.NameToLayer("CloseTile");
                    
                 }
@@ -74,6 +71,7 @@ public class Tile : MonoBehaviour
     {
         LevelHandler.I.GetLevel().RemoveTile(this);
         boxCollider2D.enabled = false;
+        transform.DOKill();
         transform.DOMove(MatchingArea.I.slots[slotID].transform.position, Configs.Tile.duration).OnComplete((() =>
         {
             Debug.Log("SpriteID: " + SpriteID);

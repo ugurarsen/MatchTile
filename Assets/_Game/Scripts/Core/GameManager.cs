@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
 
     public static void OnLevelCompleted()
     {
+        if (!isRunning) return;
         isRunning = false;
         UIManager.I.OnSuccess();
         
@@ -16,6 +17,7 @@ public class GameManager : Singleton<GameManager>
 
     public static void OnLevelFailed()
     {
+        if (!isRunning) return;
         isRunning = false;
         UIManager.I.OnFail();
     }

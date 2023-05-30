@@ -230,6 +230,7 @@ MonoBehaviour:
   zIndex: 0
   slotID: 0
   boxCollider2D: {fileID: 5930931072861619663}
+  _color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0}
 --- !u!61 &5930931072861619663
 BoxCollider2D:
   m_ObjectHideFlags: 0

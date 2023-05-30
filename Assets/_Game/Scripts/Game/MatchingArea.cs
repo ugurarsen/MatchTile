@@ -9,11 +9,15 @@ public class MatchingArea : Singleton<MatchingArea>
 {
     public Slot[] slots;
     public event Action TilesOverlapEvent;
+    [HideInInspector] public Tile lastTile;
+    [HideInInspector] public Vector3 lastTilePosition;
     public void JoinEmptySlot(Tile selectedTile)
     {
+        lastTile = selectedTile;
+        lastTilePosition = selectedTile.transform.position;
         selectedTile.boxCollider2D.enabled = false;
         TilesOverlapEvent -= selectedTile.CheckOverlap;
-        TilesOverlapEvent?.Invoke();
+        CheckTiles();
         // Eşleşen taş varsa
         for (int i = slots.Length - 1; i >= 0; i--)
         {
@@ -73,7 +77,7 @@ public class MatchingArea : Singleton<MatchingArea>
                 Debug.Log("Matched");
                 Tile tempTile = matchedSlots[i].tile;
                 matchedSlots[i].tile = null;
-                tempTile.transform.DOScaleY(0, 0.2f).OnComplete(() =>
+                tempTile.transform.DOScale(0, 0.2f).SetEase(Ease.InBack).OnComplete(() =>
                 {
                     slots[tempTile.slotID].particle.Play();
                     Destroy(tempTile.gameObject);
@@ -81,6 +85,7 @@ public class MatchingArea : Singleton<MatchingArea>
             }
             new DelayedAction(() =>
             {
+                lastTile = null;
                 MoveToSlots();
             },.4f).Execute(this);
         }
@@ -89,17 +94,15 @@ public class MatchingArea : Singleton<MatchingArea>
         {
             if (slots[slots.Length-1].tile != null)
             {
-                Debug.Log("Level Failed");
                 GameManager.OnLevelFailed();
             }
         }),1f).Execute(this);
-        
     }
-    
-    
+
 
     public void MoveToSlots()
     {
+        //Slotlardaki Tile'ları kaydır.
         List<Tile> allTiles = new List<Tile>();
 
         for (int i = 0; i < slots.Length; i++)
@@ -124,4 +127,64 @@ public class MatchingArea : Singleton<MatchingArea>
             }
         }
     }
+    
+    // tileları kontrol eden event'ı çağıran bir fonksiyon yaz
+    
+    public void CheckTiles()
+    {
+        TilesOverlapEvent?.Invoke();
+    }
+
+    public void DropBackLastTile()
+    {
+        slots[lastTile.slotID].tile = null;
+        lastTile.transform.DOMove(lastTilePosition, 0.5f).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            lastTile.boxCollider2D.enabled = true;
+            lastTile = null;
+            CheckTiles();
+        });
+    }
+
+    public bool DropFirstTwoTile()
+    {
+        List<Tile> dropTiles = new List<Tile>();
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].tile != null)
+            {
+                dropTiles.Add(slots[i].tile);
+                slots[i].tile = null;
+                if (dropTiles.Count == 2)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (dropTiles.Count >=2)
+        {
+            lastTile = null;
+            Level level = LevelHandler.I.GetLevel();
+            for (int i = 0; i < dropTiles.Count; i++)
+            {
+                dropTiles[i].transform.DOMove(level.dropTwo[i].position, 0.5f).SetEase(Ease.InBack).OnComplete(() =>
+                {
+                    dropTiles[i].boxCollider2D.enabled = true;
+                    dropTiles[i].slotID = -1;
+                });
+            }
+            new DelayedAction((() =>
+            {
+                CheckTiles();
+                MoveToSlots();
+            }),.5f).Execute(this);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
 }
