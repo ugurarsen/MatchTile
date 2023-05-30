@@ -1,14 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UA.Toolkit;
 using Unity.VisualScripting;
+using MyBox;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Level : MonoBehaviour
 {
     public List<Tile> tiles = new List<Tile>();
     public Transform[] dropTwo;
+    
+
     public void AddTile(Tile tile)
     {
         if (!tiles.Contains(tile))
@@ -57,5 +62,13 @@ public class Level : MonoBehaviour
         }
         new DelayedAction((() => MatchingArea.I.CheckTiles()), .5f).Execute(this);
     }
+    
+#if UNITY_EDITOR
+    [ButtonMethod]
+    private void MixTilesNow()
+    {
+        MixTiles();
+    }
+#endif
 
 }
