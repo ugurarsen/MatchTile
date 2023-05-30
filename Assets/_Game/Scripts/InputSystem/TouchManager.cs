@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Lofelt.NiceVibrations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,6 +43,7 @@ public class TouchManager : MonoBehaviour
             Tile tile = hit.GetComponent<Tile>();
             if (tile != null)
             {
+                Haptic.I.SetHaptic(HapticPatterns.PresetType.SoftImpact);
                 MatchingArea.I.JoinEmptySlot(tile);
             }
         }

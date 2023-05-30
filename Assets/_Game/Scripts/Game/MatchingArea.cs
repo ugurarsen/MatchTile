@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Lofelt.NiceVibrations;
 using UA.Toolkit;
+using UnityEngine.UIElements;
 
 public class MatchingArea : Singleton<MatchingArea>
 {
@@ -82,6 +84,7 @@ public class MatchingArea : Singleton<MatchingArea>
                     slots[tempTile.slotID].particle.Play();
                     Destroy(tempTile.gameObject);
                 });
+                Haptic.I.SetHaptic();
             }
             new DelayedAction(() =>
             {
@@ -95,6 +98,7 @@ public class MatchingArea : Singleton<MatchingArea>
             if (slots[slots.Length-1].tile != null)
             {
                 GameManager.OnLevelFailed();
+                Haptic.I.SetHaptic(HapticPatterns.PresetType.Warning);
             }
         }),1f).Execute(this);
     }
@@ -142,6 +146,7 @@ public class MatchingArea : Singleton<MatchingArea>
         {
             lastTile.boxCollider2D.enabled = true;
             lastTile = null;
+            LevelHandler.I.GetLevel().AddTile(lastTile);
             CheckTiles();
         });
     }
@@ -168,11 +173,10 @@ public class MatchingArea : Singleton<MatchingArea>
             Level level = LevelHandler.I.GetLevel();
             for (int i = 0; i < dropTiles.Count; i++)
             {
-                dropTiles[i].transform.DOMove(level.dropTwo[i].position, 0.5f).SetEase(Ease.InBack).OnComplete(() =>
-                {
-                    dropTiles[i].boxCollider2D.enabled = true;
-                    dropTiles[i].slotID = -1;
-                });
+                dropTiles[i].boxCollider2D.enabled = true;
+                level.AddTile(dropTiles[i]);
+                dropTiles[i].slotID = -1;
+                dropTiles[i].transform.DOMove(level.dropTwo[i].position, 0.5f).SetEase(Ease.InBack);
             }
             new DelayedAction((() =>
             {
