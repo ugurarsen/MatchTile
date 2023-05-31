@@ -74,4 +74,6 @@ public class AbilityHandler : MonoBehaviour
             dropTwoText.text = abilityCount.ToString();
         }
     }
+    
+    // TODO:Buraya butonları aktif yada pasif edeceğimiz fonksiyonlar yazalım;
 }

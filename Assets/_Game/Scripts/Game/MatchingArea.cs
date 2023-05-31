@@ -15,6 +15,11 @@ public class MatchingArea : Singleton<MatchingArea>
     [HideInInspector] public Vector3 lastTilePosition;
     public void JoinEmptySlot(Tile selectedTile)
     {
+        if (slots[slots.Length - 1].tile != null)
+        {
+            Debug.Log("Slots are full!");
+            return;
+        }
         lastTile = selectedTile;
         lastTilePosition = selectedTile.transform.position;
         selectedTile.boxCollider2D.enabled = false;
@@ -100,7 +105,7 @@ public class MatchingArea : Singleton<MatchingArea>
                 GameManager.OnLevelFailed();
                 Haptic.I.SetHaptic(HapticPatterns.PresetType.Warning);
             }
-        }),1f).Execute(this);
+        }),2f).Execute(this);
     }
 
 
