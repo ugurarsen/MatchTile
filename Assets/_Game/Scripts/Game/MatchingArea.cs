@@ -143,15 +143,14 @@ public class MatchingArea : Singleton<MatchingArea>
     {
         TilesOverlapEvent?.Invoke();
     }
-
     public void DropBackLastTile()
     {
         slots[lastTile.slotID].tile = null;
         lastTile.transform.DOMove(lastTilePosition, 0.5f).SetEase(Ease.InBack).OnComplete(() =>
         {
             lastTile.boxCollider2D.enabled = true;
-            lastTile = null;
             LevelHandler.I.GetLevel().AddTile(lastTile);
+            lastTile = null;
             CheckTiles();
         });
     }

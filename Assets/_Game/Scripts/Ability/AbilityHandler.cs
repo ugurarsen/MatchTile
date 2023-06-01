@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AbilityHandler : MonoBehaviour
+public class AbilityHandler : Singleton<AbilityHandler>
 {
     public Button mixTilesButton, dropBackButton, dropTwoButton;
     public TextMeshProUGUI mixTilesText, dropBackText, dropTwoText;
@@ -74,6 +74,13 @@ public class AbilityHandler : MonoBehaviour
             dropTwoText.text = abilityCount.ToString();
         }
     }
+
+    public void OpenAllButtons()
+    {
+        mixTilesButton.gameObject.SetActive(true);
+        dropBackButton.gameObject.SetActive(true);
+        dropTwoButton.gameObject.SetActive(true);
+    }
     
-    // TODO:Buraya butonları aktif yada pasif edeceğimiz fonksiyonlar yazalım;
+    // Aslında ineractable false yapmak da olabilirdi ama referans oyunlarda böyle kullanılmış.
 }
