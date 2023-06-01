@@ -7,7 +7,8 @@ public class TutorialManager : Singleton<TutorialManager>
     public Transform hand;
     public GameObject bgBlur;
     private int _levelNo;
-    private void Start()
+
+    public void Start()
     {
         _levelNo = SaveLoadManager.GetLevel();
         if (_levelNo > 3)
@@ -41,7 +42,7 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void DropTwoButtonTutorial()
     {
-        if (MatchingArea.I.slots[1].tile != null)
+        if (MatchingArea.I.slots[1].tile != null && MatchingArea.I.slots[0].tile != null)
         {
             new DelayedAction((() =>
             {
@@ -60,8 +61,12 @@ public class TutorialManager : Singleton<TutorialManager>
                         CloseHand();
                     });
                 }
-            }), 1f).Execute(this);
+            }), 2f).Execute(this);
             
+        }
+        else
+        {
+            MatchingArea.I.TilesOverlapEvent += DropTwoButtonTutorial;
         }
     }
 

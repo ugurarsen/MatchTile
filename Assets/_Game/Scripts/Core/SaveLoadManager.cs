@@ -6,7 +6,7 @@ public class SaveLoadManager : MonoBehaviour
 
     const string KEY_LEVEL = "levels";
     public static void IncreaseLevel() => PlayerPrefs.SetInt(KEY_LEVEL, GetLevel() + 1);
-    public static int GetLevel() => PlayerPrefs.GetInt(KEY_LEVEL, 1);
+    public static int GetLevel() => PlayerPrefs.GetInt(KEY_LEVEL, 2);
 
     #endregion
 

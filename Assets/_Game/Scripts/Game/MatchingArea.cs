@@ -103,7 +103,7 @@ public class MatchingArea : Singleton<MatchingArea>
                 GameManager.OnLevelFailed();
                 Haptic.I.SetHaptic(HapticPatterns.PresetType.Warning);
             }
-        }),2f).Execute(this);
+        }),3f).Execute(this);
     }
 
 
